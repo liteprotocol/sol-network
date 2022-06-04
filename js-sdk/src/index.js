@@ -1,26 +1,26 @@
-import TronWeb from 'tronweb';
+import LiteWeb from 'liteweb';
 import {sha256} from './helper/ethersUtils';
 
-export default class SunWeb {
-    static TronWeb = TronWeb;
+export default class SolWeb {
+    static LiteWeb = LiteWeb;
     constructor(mainOptions = false, sideOptions = false, mainGatewayAddress = false, sideGatewayAddress = false, sideChainId = false, privateKey = false) {
         mainOptions = {...mainOptions, privateKey};
         sideOptions = {...sideOptions, privateKey};
-        this.mainchain = new TronWeb(mainOptions);
-        this.sidechain = new TronWeb(sideOptions);
+        this.mainchain = new LiteWeb(mainOptions);
+        this.sidechain = new LiteWeb(sideOptions);
         this.isAddress = this.mainchain.isAddress;
         this.utils = this.mainchain.utils;
         this.setMainGatewayAddress(mainGatewayAddress);
         this.setSideGatewayAddress(sideGatewayAddress);
         this.setChainId(sideChainId);
         this.injectPromise = this.utils.promiseInjector(this);
-        this.validator = this.mainchain.trx.validator;
+        this.validator = this.mainchain.xlt.validator;
 
         const self = this;
-        this.sidechain.trx.sign = (...args) => {
+        this.sidechain.xlt.sign = (...args) => {
             return self.sign(...args);
         };
-        this.sidechain.trx.multiSign = (...args) => {
+        this.sidechain.xlt.multiSign = (...args) => {
             return self.multiSign(...args);
         };
     }
@@ -81,7 +81,7 @@ export default class SunWeb {
 
         // check if private key insides permission list
         const address = this.sidechain.address.toHex(this.sidechain.address.fromPrivateKey(privateKey)).toLowerCase();
-        const signWeight = await this.sidechain.trx.getSignWeight(transaction, permissionId);
+        const signWeight = await this.sidechain.xlt.getSignWeight(transaction, permissionId);
 
         if (signWeight.result.code === 'PERMISSION_ERROR') {
            return callback(signWeight.result.message);
@@ -114,27 +114,27 @@ export default class SunWeb {
         }
     }
 
-    async sign(transaction = false, privateKey = this.sidechain.defaultPrivateKey, useTronHeader = true, multisig = false, callback = false) {
+    async sign(transaction = false, privateKey = this.sidechain.defaultPrivateKey, useLiteHeader = true, multisig = false, callback = false) {
         if (this.utils.isFunction(multisig)) {
             callback = multisig;
             multisig = false;
         }
 
-        if (this.utils.isFunction(useTronHeader)) {
-            callback = useTronHeader;
-            useTronHeader = true;
+        if (this.utils.isFunction(useLiteHeader)) {
+            callback = useLiteHeader;
+            useLiteHeader = true;
             multisig = false;
         }
 
         if (this.utils.isFunction(privateKey)) {
             callback = privateKey;
             privateKey = this.sidechain.defaultPrivateKey;
-            useTronHeader = true;
+            useLiteHeader = true;
             multisig = false;
         }
 
         if (!callback)
-            return this.injectPromise(this.sign, transaction, privateKey, useTronHeader, multisig);
+            return this.injectPromise(this.sign, transaction, privateKey, useLiteHeader, multisig);
 
         // Message signing
         if (this.utils.isString(transaction)) {
@@ -143,7 +143,7 @@ export default class SunWeb {
                 return callback('Expected hex message input');
 
             try {
-                const signatureHex = this.sidechain.trx.signString(transaction, privateKey, useTronHeader);
+                const signatureHex = this.sidechain.xlt.signString(transaction, privateKey, useLiteHeader);
                 return callback(null, signatureHex);
             } catch (ex) {
                 callback(ex);
@@ -175,7 +175,7 @@ export default class SunWeb {
      /**
      * deposit asset to sidechain
      */
-    async depositTrx(
+    async depositXlt(
         callValue,
         depositFee,
         feeLimit,
@@ -192,7 +192,7 @@ export default class SunWeb {
             options = {};
         }
         if (!callback) {
-            return this.injectPromise(this.depositTrx, callValue, depositFee, feeLimit, options, privateKey);
+            return this.injectPromise(this.depositXlt, callValue, depositFee, feeLimit, options, privateKey);
         }
         if (this.validator.notValid([
             {
@@ -224,7 +224,7 @@ export default class SunWeb {
         };
         try {
             const contractInstance = await this.mainchain.contract().at(this.mainGatewayAddress);
-            const result = await contractInstance.depositTRX().send(options, privateKey);
+            const result = await contractInstance.depositXLT().send(options, privateKey);
             return callback(null, result);
         } catch (ex) {
             return callback(ex);
@@ -476,7 +476,7 @@ export default class SunWeb {
      * mapping asset TRC20 or TRC721 to DAppChain
      */
     async mappingTrc(
-        trxHash,
+        xltHash,
         mappingFee,
         feeLimit,
         functionSelector,
@@ -493,13 +493,13 @@ export default class SunWeb {
             options = {};
         }
         if (!callback) {
-            return this.injectPromise(this.mappingTrc, trxHash, mappingFee, feeLimit, functionSelector, options, privateKey);
+            return this.injectPromise(this.mappingTrc, xltHash, mappingFee, feeLimit, functionSelector, options, privateKey);
         }
         if (this.validator.notValid([
             {
-                name: 'trxHash',
+                name: 'xltHash',
                 type: 'not-empty-string',
-                value: trxHash
+                value: xltHash
             },
             {
                 name: 'mappingFee',
@@ -517,7 +517,7 @@ export default class SunWeb {
         ], callback)) {
             return;
         }
-        trxHash = trxHash.startsWith('0x') ? trxHash : ('0x' + trxHash);
+        xltHash = xltHash.startsWith('0x') ? xltHash : ('0x' + xltHash);
         options = {
             feeLimit,
             ...options,
@@ -527,9 +527,9 @@ export default class SunWeb {
             const contractInstance = await this.mainchain.contract().at(this.mainGatewayAddress);
             let result = null;
             if (functionSelector === 'mappingTRC20') {
-                result = await contractInstance.mappingTRC20(trxHash).send(options, privateKey);
+                result = await contractInstance.mappingTRC20(xltHash).send(options, privateKey);
             } else if (functionSelector === 'mappingTRC721') {
-                result = await contractInstance.mappingTRC721(trxHash).send(options, privateKey);
+                result = await contractInstance.mappingTRC721(xltHash).send(options, privateKey);
             } else {
                 callback(new Error('type must be trc20 or trc721'));
             }
@@ -540,7 +540,7 @@ export default class SunWeb {
     }
 
     async mappingTrc20(
-        trxHash,
+        xltHash,
         mappingFee,
         feeLimit,
         options = {},
@@ -549,7 +549,7 @@ export default class SunWeb {
     ) {
         const functionSelector = 'mappingTRC20';
         return this.mappingTrc(
-            trxHash,
+            xltHash,
             mappingFee,
             feeLimit,
             functionSelector,
@@ -559,7 +559,7 @@ export default class SunWeb {
     }
 
     async mappingTrc721(
-        trxHash,
+        xltHash,
         mappingFee,
         feeLimit,
         options = {},
@@ -568,7 +568,7 @@ export default class SunWeb {
     ) {
         const functionSelector = 'mappingTRC721';
         return this.mappingTrc(
-            trxHash,
+            xltHash,
             mappingFee,
             feeLimit,
             functionSelector,
@@ -578,9 +578,9 @@ export default class SunWeb {
     }
 
     /**
-     * withdraw trx from sidechain to mainchain
+     * withdraw xlt from sidechain to mainchain
      */
-    async withdrawTrx(
+    async withdrawXlt(
         callValue,
         withdrawFee,
         feeLimit,
@@ -597,7 +597,7 @@ export default class SunWeb {
             options = {};
         }
         if (!callback) {
-            return this.injectPromise(this.withdrawTrx, callValue, withdrawFee, feeLimit, options, privateKey);
+            return this.injectPromise(this.withdrawXlt, callValue, withdrawFee, feeLimit, options, privateKey);
         }
         if (this.validator.notValid([
             {
@@ -629,7 +629,7 @@ export default class SunWeb {
         };
         try {
             const contractInstance = await this.sidechain.contract().at(this.sideGatewayAddress);
-            const result = await contractInstance.withdrawTRX().send(options, privateKey);
+            const result = await contractInstance.withdrawXLT().send(options, privateKey);
             return callback(null, result);
         } catch (ex) {
             return callback(ex);
@@ -780,7 +780,7 @@ export default class SunWeb {
                 return callback('Unknown error: ' + JSON.stringify(transaction.transaction, null, 2));
             }
 
-            const signedTransaction = await this.sidechain.trx.sign(transaction.transaction, privateKey);
+            const signedTransaction = await this.sidechain.xlt.sign(transaction.transaction, privateKey);
 
             if (!signedTransaction.signature) {
                 if (!privateKey)
@@ -789,7 +789,7 @@ export default class SunWeb {
                 return callback('Invalid private key provided');
             }
 
-            const broadcast = await this.sidechain.trx.sendRawTransaction(signedTransaction);
+            const broadcast = await this.sidechain.xlt.sendRawTransaction(signedTransaction);
             if (broadcast.code) {
                 const err = {
                     error: broadcast.code,
@@ -811,7 +811,7 @@ export default class SunWeb {
                     });
                 }
 
-                const output = await this.sidechain.trx.getTransactionInfo(signedTransaction.txID);
+                const output = await this.sidechain.xlt.getTransactionInfo(signedTransaction.txID);
 
                 if (!Object.keys(output).length) {
                     return setTimeout(() => {
@@ -940,7 +940,7 @@ export default class SunWeb {
                 amount: num
             }, 'post');
 
-            const signedTransaction = await this.sidechain.trx.sign(transaction, privateKey);
+            const signedTransaction = await this.sidechain.xlt.sign(transaction, privateKey);
 
             if (!signedTransaction.signature) {
                 if (!privateKey)
@@ -949,7 +949,7 @@ export default class SunWeb {
                 return callback('Invalid private key provided');
             }
 
-            const broadcast = await this.sidechain.trx.sendRawTransaction(signedTransaction);
+            const broadcast = await this.sidechain.xlt.sendRawTransaction(signedTransaction);
             if (broadcast.code) {
                 const err = {
                     error: broadcast.code,

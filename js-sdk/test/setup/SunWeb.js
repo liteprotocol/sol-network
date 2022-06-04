@@ -1,1 +1,1 @@
-module.exports = require('../../dist/SunWeb.node');
+module.exports = require('../../dist/SolWeb.node');

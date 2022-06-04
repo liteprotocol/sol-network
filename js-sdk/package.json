@@ -1,8 +1,8 @@
 {
-    "name": "sunweb",
+    "name": "solweb",
     "version": "1.0.7",
-    "description": "JavaScript SDK that encapsulates the TRON HTTP API",
-    "main": "dist/SunWeb.node.js",
+    "description": "JavaScript SDK that encapsulates the LITE HTTP API",
+    "main": "dist/SolWeb.node.js",
     "scripts": {
         "prepare": "npm run build",
         "build": "npm run clean && webpack --config webpack.config.js --progress --colors",
@@ -17,7 +17,7 @@
         "@babel/runtime": "^7.4.5",
         "babel-runtime": "^6.26.0",
         "ethers": "^4.0.32",
-        "tronweb": "^2.7.1"
+        "liteweb": "^2.7.4  "
     },
     "devDependencies": {
         "@babel/core": "^7.4.5",
@@ -61,16 +61,16 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/tronprotocol/sun-network"
+        "url": "git+https://github.com/liteprotocol/sol-network"
     },
     "keywords": [
-        "sunweb",
-        "tron"
+        "solweb",
+        "lite"
     ],
     "author": "cathyTan",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/tronprotocol/sun-network/issues"
+        "url": "https://github.com/liteprotocol/sol-network/issues"
     },
-    "homepage": "https://github.com/tronprotocol/sun-network/tree/develop/js-sdk#readme"
+    "homepage": "https://github.com/liteprotocol/sol-network/tree/develop/js-sdk#readme"
 }

@@ -1,12 +1,12 @@
-# SUNWEB
+# SOLWEB
 
-SunWeb inherits from TronWeb and services for Sun-network. We  encapsulated two objects (mainchain and sidechain) based on TronWeb. The methods and attributes in mainchain or sidechain are exactly the same as the tronweb instance. For example, users can use sunweb.mainchain.trx.getBalance() to get balance from the mainchain. Futhermore, we add some new methods which are as follows in SunWeb class so that users can use them to contact between the main chain and the side chain. 
+SolWeb inherits from LiteWeb and services for Sol-network. We  encapsulated two objects (mainchain and sidechain) based on LiteWeb. The methods and attributes in mainchain or sidechain are exactly the same as the liteweb instance. For example, users can use solweb.mainchain.xlt.getBalance() to get balance from the mainchain. Futhermore, we add some new methods which are as follows in SolWeb class so that users can use them to contact between the main chain and the side chain. 
 
-## SunWeb Object
+## SolWeb Object
 
 ###### SubWeb Instantiation
 
-To use the SunWeb library in your App, you need to instantiate Sunweb. 
+To use the SolWeb library in your App, you need to instantiate Solweb. 
 
 You can define two objects mainOptions and sideOptions which respectively contains the following key:
 
@@ -27,13 +27,13 @@ And besides, you may also need to set gateway address:
 -  sideChainId
 - privateKey (optional)
 
-Supposing you are using a server which provides everything, like TronGrid, you can instantiate SunWeb as:
+Supposing you are using a server which provides everything, like LiteGrid, you can instantiate SolWeb as:
 
 ```javascript
-const sunWeb = new SunWeb({
-  fullHost: 'https://mainapi.trongrid.io'
+const solWeb = new SolWeb({
+  fullHost: 'https://mainapi.litegrid.io'
 }, {
-  fullHost: 'https://sideapi.trongrid.io'
+  fullHost: 'https://sideapi.litegrid.io'
 },
   mainGatewayAddress: 'TEEXEWrkMFKapSMJ6mErg39ELFKDqEs6w3' ,
   sideGatewayAddress: 'TXPHCzmAmjyERtWES6EXTYqUPfJfQSzp2m',
@@ -44,14 +44,14 @@ const sunWeb = new SunWeb({
 If you are using different servers for anything, you can instantiate like:
 
 ```javascript
-const sunWeb = new SunWeb({
-  fullNode: 'http://fullnode.tron.network',
-  solidityNode: 'http://solidity.tron.network',
-  eventServer: 'http://mainapi.trongrid.io'
+const solWeb = new SolWeb({
+  fullNode: 'http://fullnode.lite.network',
+  solidityNode: 'http://solidity.lite.network',
+  eventServer: 'http://mainapi.litegrid.io'
 }, {
-  fullNode: 'http://fullnode.sun.network',
-  solidityNode: 'http://solidity.sun.network',
-  eventServer: 'http://sideapi.trongrid.io'
+  fullNode: 'http://fullnode.sol.network',
+  solidityNode: 'http://solidity.sol.network',
+  eventServer: 'http://sideapi.litegrid.io'
 },
   mainGatewayAddress: 'TTGhuSDKr561gzHFjkZ1V4ZtMgUEFLa7ct',
   sideGatewayAddress: 'TBAHKAbjZ6nn3B4cAfNd2ZXscRoskaxbk2',
@@ -59,10 +59,10 @@ const sunWeb = new SunWeb({
   privateKey: '...');
 ```
 
-For example, you can create a sunWeb instance connected to out sun network test-net like:
+For example, you can create a solWeb instance connected to out sol network test-net like:
 
 ```javascript
-const sunWeb = new SunWeb({
+const solWeb = new SolWeb({
   fullNode: 'http://39.107.123.182:8090',
   solidityNode: 'http://47.252.84.158:8090',
   eventServer: 'http://47.252.84.141:8080'
@@ -77,29 +77,29 @@ const sunWeb = new SunWeb({
   privateKey: '...');
 ```
 
-## New functions in SunWeb
+## New functions in SolWeb
 
 ## Asset Deposit
 
 deposit asset from mainchain to sidechain
 
-#### depositTrx
+#### depositXlt
 
-###### deposit trx  from main chain to side chain
+###### deposit xlt  from main chain to side chain
 
 ```javascript
 // Format
-sunWeb.depostiTrx(callValue, feeLimit, options);
+solWeb.depostiXlt(callValue, feeLimit, options);
 
 // example
-sunWeb.depositTrx(100000000, 1000000);
+solWeb.depositXlt(100000000, 1000000);
 ```
 
 ###### Arguments
 
 | Parameter | Description                             | Type                   | Options  |
 | --------- | --------------------------------------- | ---------------------- | -------- |
-| callValue | Amount of TRX (Units in SUN) to deposit | Integer (Units in SUN) | Required |
+| callValue | Amount of XLT (Units in SOL) to deposit | Integer (Units in SOL) | Required |
 | feeLimit  | Cost limit                              | Integer, long          | Required |
 | options   | The permissions Id                      | Object                 | Optional |
 
@@ -109,10 +109,10 @@ sunWeb.depositTrx(100000000, 1000000);
 
 ```javascript
 // format
-sunWeb.depositTrc10(tokenId, tokenValue, feeLimit, options);
+solWeb.depositTrc10(tokenId, tokenValue, feeLimit, options);
 
 // example
-sunWeb.depositTrc10(100059, 10000000, 100000);
+solWeb.depositTrc10(100059, 10000000, 100000);
 ```
 
 ###### Arguments
@@ -120,7 +120,7 @@ sunWeb.depositTrc10(100059, 10000000, 100000);
 | Parameter  | Description                                     | Type                   | Options  |
 | ---------- | ----------------------------------------------- | ---------------------- | -------- |
 | tokenId    | Token Id of trc10                               | Integer                | Required |
-| tokenValue | Amount of trc10 token (Units in SUN) to deposit | Integer (Units in SUN) | Required |
+| tokenValue | Amount of trc10 token (Units in SOL) to deposit | Integer (Units in SOL) | Required |
 | feeLimit   | Cost limit                                      | Integer, long          | Required |
 | options    | The permissions Id                              | Object                 | Optional |
 
@@ -128,21 +128,21 @@ sunWeb.depositTrc10(100059, 10000000, 100000);
 
 ###### deposit trc20 token from main chain to side chain
 
-Note: You have to mapping TRC20 contract to side chain with the mappingTrc20 function provided by SunWeb. Then you also have to use  the approveTrc20 function. Only done with the two steps before, you can depositTrc20 from main chain to side chain.
+Note: You have to mapping TRC20 contract to side chain with the mappingTrc20 function provided by SolWeb. Then you also have to use  the approveTrc20 function. Only done with the two steps before, you can depositTrc20 from main chain to side chain.
 
 ```javascript
 // format
-sunWeb.depositTrc10(num, feeLimit, contractAddress, options);
+solWeb.depositTrc10(num, feeLimit, contractAddress, options);
 
 // example
-sunWeb.depositTrc10(1000000, 1000000, 'TD9Jrm546pGkzRu7K5nitMxk8nn75wXNkQ');
+solWeb.depositTrc10(1000000, 1000000, 'TD9Jrm546pGkzRu7K5nitMxk8nn75wXNkQ');
 ```
 
 ###### Arguments
 
 | Parameter       | Description                                | Type          | Options  |
 | --------------- | ------------------------------------------ | ------------- | -------- |
-| Num             | Amount of TRC20  (Units in SUN) to deposit | Integer       | Required |
+| Num             | Amount of TRC20  (Units in SOL) to deposit | Integer       | Required |
 | feeLimit        | Cost limit                                 | Integer, long | Required |
 | contractAddress | Main Chain TRC20 Contract Address          | String        | Required |
 | options         | The permissions Id                         | Object        | Optional |
@@ -155,10 +155,10 @@ Note: You have to use mappingTrc721 and approveTrc721 before depositTrc721 like 
 
 ```javascript
 // format
-sunWeb.depositTrc721(id, feeLimit, contractAddress, options);
+solWeb.depositTrc721(id, feeLimit, contractAddress, options);
 
 // example
-sunWeb.depositTrc10(1000000, 1000000, 'TCLRqK6aP2xsCZWhE2smkYzdRHf9uvyz5P');
+solWeb.depositTrc10(1000000, 1000000, 'TCLRqK6aP2xsCZWhE2smkYzdRHf9uvyz5P');
 ```
 
 ###### Arguments
@@ -180,10 +180,10 @@ sunWeb.depositTrc10(1000000, 1000000, 'TCLRqK6aP2xsCZWhE2smkYzdRHf9uvyz5P');
 
 ```javascript
 // format
-sunWeb.approveTrc20(num, feeLimit, contractAddress, options);
+solWeb.approveTrc20(num, feeLimit, contractAddress, options);
 
 // example
-sunWeb.approveTrc20(10000, 10000000, 'TGKuXDnvdHv9RNE6BPXUtNLK2FrVMBDAuA');
+solWeb.approveTrc20(10000, 10000000, 'TGKuXDnvdHv9RNE6BPXUtNLK2FrVMBDAuA');
 ```
 
 ###### Arguments
@@ -201,10 +201,10 @@ sunWeb.approveTrc20(10000, 10000000, 'TGKuXDnvdHv9RNE6BPXUtNLK2FrVMBDAuA');
 
 ```javascript
 // format
-sunWeb.approveTrc721(id, feeLimit, contractAddress, options);
+solWeb.approveTrc721(id, feeLimit, contractAddress, options);
 
 // example
-sunWeb.approveTrc721(100, 10000000, 'TUxDmFbEceGgjWCb6rLVcrFgnsWwofPdPq');
+solWeb.approveTrc721(100, 10000000, 'TUxDmFbEceGgjWCb6rLVcrFgnsWwofPdPq');
 ```
 
 ###### Arguments
@@ -224,7 +224,7 @@ sunWeb.approveTrc721(100, 10000000, 'TUxDmFbEceGgjWCb6rLVcrFgnsWwofPdPq');
 
 ```javascript
 // format
-mappingTrc20(trxHash, feeLimit, options);
+mappingTrc20(xltHash, feeLimit, options);
 
 // example
 mappingTrc20('548442d9080605a60adf1d30cc126a2b9c6308cbe9ec224f8c67a6c2590fa299', 100000, , options);
@@ -234,7 +234,7 @@ mappingTrc20('548442d9080605a60adf1d30cc126a2b9c6308cbe9ec224f8c67a6c2590fa299',
 
 | Parameter | Description                                                  | Type          | Options  |
 | --------- | ------------------------------------------------------------ | ------------- | -------- |
-| trxHash   | The hash value of the transaction for the main chain deployment TRC20 contract | Hex string    | Required |
+| xltHash   | The hash value of the transaction for the main chain deployment TRC20 contract | Hex string    | Required |
 | feeLimit  | cost limit                                                   | Integer, long | Required |
 | options   | The permissions Id                                           | Object        | Optional |
 
@@ -244,7 +244,7 @@ mappingTrc20('548442d9080605a60adf1d30cc126a2b9c6308cbe9ec224f8c67a6c2590fa299',
 
 ```javascript
 // format
-mappingTrc721(trxHash, feeLimit, options);
+mappingTrc721(xltHash, feeLimit, options);
 
 // example
 mappingTrc721('548442d9080605a60adf1d30cc126a2b9c6308cbe9ec224f8c67a6c2590fa299', 100000, , options);
@@ -254,29 +254,29 @@ mappingTrc721('548442d9080605a60adf1d30cc126a2b9c6308cbe9ec224f8c67a6c2590fa299'
 
 | Parameter | Description                                                  | Type          | Options  |
 | --------- | ------------------------------------------------------------ | ------------- | -------- |
-| trxHash   | The hash value of the transaction for the main chain deployment TRC721 contract | Hex string    | Required |
+| xltHash   | The hash value of the transaction for the main chain deployment TRC721 contract | Hex string    | Required |
 | feeLimit  | cost limit                                                   | Integer, long | Required |
 | options   | The permissions Id                                           | Object        | Optional |
 
 ## Asset Withdraw
 
-#### withdrawTrx
+#### withdrawXlt
 
-###### Withdraw trx  from side chain to main chain
+###### Withdraw xlt  from side chain to main chain
 
 ```javascript
 // Format
-sunWeb.withdrawTrx(callValue, feeLimit, options);
+solWeb.withdrawXlt(callValue, feeLimit, options);
 
 // example
-sunWeb.withdrawTrx(100000000, 1000000);
+solWeb.withdrawXlt(100000000, 1000000);
 ```
 
 ###### Arguments
 
 | Parameter | Description                             | Type                   | Options  |
 | --------- | --------------------------------------- | ---------------------- | -------- |
-| callValue | Amount of TRX (Units in SUN) to deposit | Integer (Units in SUN) | Required |
+| callValue | Amount of XLT (Units in SOL) to deposit | Integer (Units in SOL) | Required |
 | feeLimit  | Cost limit                              | Integer, long          | Required |
 | options   | The permissions Id                      | Object                 | Optional |
 
@@ -286,10 +286,10 @@ sunWeb.withdrawTrx(100000000, 1000000);
 
 ```javascript
 // format
-sunWeb.withdrawTrc10(tokenId, tokenValue, feeLimit, options);
+solWeb.withdrawTrc10(tokenId, tokenValue, feeLimit, options);
 
 // example
-sunWeb.withdrawTrc10(100059, 10000000, 100000);
+solWeb.withdrawTrc10(100059, 10000000, 100000);
 ```
 
 ###### Arguments
@@ -297,7 +297,7 @@ sunWeb.withdrawTrc10(100059, 10000000, 100000);
 | Parameter  | Description                                     | Type                   | Options  |
 | ---------- | ----------------------------------------------- | ---------------------- | -------- |
 | tokenId    | Token Id of TRC10                               | Integer                | Required |
-| tokenValue | Amount of TRC10 token (Units in SUN) to deposit | Integer (Units in SUN) | Required |
+| tokenValue | Amount of TRC10 token (Units in SOL) to deposit | Integer (Units in SOL) | Required |
 | feeLimit   | Cost limit                                      | Integer, long          | Required |
 | options    | The permissions Id                              | Object                 | Optional |
 
@@ -307,10 +307,10 @@ sunWeb.withdrawTrc10(100059, 10000000, 100000);
 
 ```javascript
 // format
-sunWeb.withdrawTrc20(num, feeLimit, contractAddress, options);
+solWeb.withdrawTrc20(num, feeLimit, contractAddress, options);
 
 // example
-sunWeb.withdrawTrc20(10000, 10000000, 'TWzXQmDoASGodMss7uPD6vUgLHnkQFX7ok');
+solWeb.withdrawTrc20(10000, 10000000, 'TWzXQmDoASGodMss7uPD6vUgLHnkQFX7ok');
 ```
 
 ###### Arguments
@@ -328,10 +328,10 @@ sunWeb.withdrawTrc20(10000, 10000000, 'TWzXQmDoASGodMss7uPD6vUgLHnkQFX7ok');
 
 ```javascript
 // format
-sunWeb.withdrawTrc721(id, feeLimit, contractAddress, options);
+solWeb.withdrawTrc721(id, feeLimit, contractAddress, options);
 
 // example
-sunWeb.withdrawTrc721(101, 10000000, 'TA2xrVESq2UcEtDtgPzxNJEiLgxmMVdtFR');
+solWeb.withdrawTrc721(101, 10000000, 'TA2xrVESq2UcEtDtgPzxNJEiLgxmMVdtFR');
 ```
 
 ###### Arguments

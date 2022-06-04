@@ -59,7 +59,7 @@ module.exports = [
         ...baseConfig,
         output: {
             path: path.resolve(__dirname, 'dist'),
-            filename: 'SunWeb.node.js',
+            filename: 'SolWeb.node.js',
             libraryTarget: 'commonjs2',
             libraryExport: 'default'
         },
@@ -92,8 +92,8 @@ module.exports = [
         ...baseConfig,
         output: {
             path: path.resolve(__dirname, 'dist'),
-            filename: 'SunWeb.js',
-            library: 'SunWeb',
+            filename: 'SolWeb.js',
+            library: 'SolWeb',
             libraryTarget: 'umd',
             libraryExport: 'default',
             umdNamedDefine: true
